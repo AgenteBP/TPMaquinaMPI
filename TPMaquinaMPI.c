@@ -9,7 +9,7 @@
 #define NARANJA 2 ///ENFERMO SIN SINTOMAS
 #define ROJO 3 ///ENFERMO CON SINTOMAS
 #define VERDE 4 ///SANO
-#define N  150
+#define N 1500
 
 int tamG;
 
@@ -452,7 +452,8 @@ void pasadorPrimerasFilas(Arbol *matrizAux, Arbol *matrizAuxP){
 
 void main(int argc, char *argv[]){
     ///MPI
-    
+    float tiempofinal, tiempoTotal;
+    double startwtime = 0.0, endwtime; // Variables de tiempo
     MPI_Init(&argc, &argv);
     MPI_Status status; //Para usar en el "recibir" del mensaje y en el test
     MPI_Request request; //Para usar en el MPI_Test
@@ -461,8 +462,7 @@ void main(int argc, char *argv[]){
     MPI_Comm_size(MPI_COMM_WORLD,&comm_sz);// Obtener la cantidad de procesos
     MPI_Comm_rank(MPI_COMM_WORLD,&my_rank);// Obtener el número de proceso
 
-    int i,j,randoE,randoEdad, ejecuciones=50,posicion;
-    clock_t  tiempo_inicio, tiempo_final, tiempoTotal;
+    int i,j,randoE,randoEdad, ejecuciones=500,posicion;
     double segundos;
     int randoH;
     int cantEjecuciones;
@@ -485,17 +485,17 @@ void main(int argc, char *argv[]){
     int arbolCuenta[2];/// Pos 0= rojo, 1= tiene el total de vecinos
     int probContangio;
     
-    for(cantEjecuciones=0; cantEjecuciones<10; cantEjecuciones++){
-    //tiempo_inicio = clock();
+    for(cantEjecuciones=0; cantEjecuciones<5; cantEjecuciones++){
+    startwtime = MPI_Wtime(); // Comienza a medir el tiempo
     // asigno valores
     if(my_rank== 0){
         mat= (Arbol *)malloc(N*N*sizeof(Arbol));
-        printf("Mostrar matriz:\n");
+        //printf("Mostrar matriz:\n");
         for(j=0;j<N;j++){
             for(i=0;i<N;i++){
-                if(i==0){
-                  printf("[");
-                }
+                // if(i==0){
+                //   printf("[");
+                // }
                 posicion= j*N+i;
                 //printf("posicion %d\n",posicion);
                 randoE= rand() % 100;
@@ -561,13 +561,13 @@ void main(int argc, char *argv[]){
 
                     }
                 }
-                printf("%d  ",mat[posicion].estado);
-                if(i==N-1){
-                    printf("]\n");
-                }
-                else{
-                    printf(" ");
-                }
+                // printf("%d  ",mat[posicion].estado);
+                // if(i==N-1){
+                //     printf("]\n");
+                // }
+                // else{
+                //     printf(" ");
+                // }
              }
 
         }
@@ -818,17 +818,22 @@ void main(int argc, char *argv[]){
         MPI_COMM_WORLD);
         
 
-        if(my_rank==0){
-            printf("Muestro matriz en semana %d\n",ciclo+1);
-            imprimirMatriz(mat);
+        // if(my_rank==0){
+        //     printf("Muestro matriz en semana %d\n",ciclo+1);
+        //     imprimirMatriz(mat);
             
-        }
+        // }
 
     }
 
     if(my_rank==0){
         free((void*)mat);
-        printf("Ejecucion numero: %d\n",cantEjecuciones+1);
+        //printf("Ejecucion numero: %d\n",cantEjecuciones+1);
+        endwtime = MPI_Wtime(); // Termina de medir el tiempo Total
+
+        tiempofinal= endwtime- startwtime;
+        printf("Tiempo de ejecucion de una vuelta: %f\n",tiempofinal);
+        tiempoTotal+= tiempofinal;
     }
     /*tiempo_final = clock();
 
@@ -838,11 +843,13 @@ void main(int argc, char *argv[]){
     tiempoTotal += (tiempo_final-tiempo_inicio);*/
 
         
-    }
+    } 
     //printf("el tiempo promedio de las ejecuciones fue: %f\n",(double)(tiempoTotal/10)/CLOCKS_PER_SEC);*/
-    // if(my_rank!=0){
-    //}
+    if(my_rank==0){
+        printf("el tiempo promedio de las ejecuciones fue: %f\n",(tiempoTotal/10));
+    }
     MPI_Finalize();
+    
     free((void*)matrizAux);
     free((void*)aux);
     free((void*)matrizAuxP);
