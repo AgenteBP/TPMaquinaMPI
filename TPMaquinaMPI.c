@@ -847,8 +847,8 @@ void main(int argc, char *argv[]){
     //printf("el tiempo promedio de las ejecuciones fue: %f\n",(double)(tiempoTotal/10)/CLOCKS_PER_SEC);*/
     if(my_rank==0){
         printf("El tiempo promedio de las ejecuciones fue: %f\n",(tiempoTotal/5));
-        printf("Con una matriz de %dx%d\n,N,N);
-        printf("Con semana: %d\n,ejecuciones);
+        printf("Con una matriz de %dx%d\n",N,N);
+        printf("Con semana: %d\n",ejecuciones);
         printf("Y 5 ejecuciones\n");     
     }
     MPI_Finalize();
