@@ -9,7 +9,7 @@
 #define NARANJA 2 ///ENFERMO SIN SINTOMAS
 #define ROJO 3 ///ENFERMO CON SINTOMAS
 #define VERDE 4 ///SANO
-#define N 1500
+#define N 2000
 
 int tamG;
 
