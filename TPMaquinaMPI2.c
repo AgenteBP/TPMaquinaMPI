@@ -5,8 +5,8 @@
 #include <mpi.h>
 
 //dimension de la matriz
-#define FILAS 500      //1500, 5000 y 7500 funciona hasta 6600
-#define COLUMNAS 500   //1500, 5000 y 7500
+#define FILAS 1200      //1500, 5000 y 7500 funciona hasta 6600
+#define COLUMNAS 1200   //1500, 5000 y 7500
 #define VUELTAS 1
 #define VECINOS 12
 
