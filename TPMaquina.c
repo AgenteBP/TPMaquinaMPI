@@ -150,12 +150,12 @@ void imprimirMatriz(Arbol *mat){
 }
 void main(){
 
-    int i,j,randoE,randoEdad, ejecuciones=50,posicion;
+    int i,j,randoE,randoEdad, ejecuciones=1000,posicion;
     clock_t  tiempo_inicio, tiempo_final, tiempoTotal;
     double segundos;
     int randoH;
     int cantEjecuciones;
-    N=150;
+    N=1500;
     Arbol *mat= NULL;
     mat= (Arbol *)malloc(N*N*sizeof(Arbol));
     Arbol *matrizAux= NULL;
