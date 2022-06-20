@@ -191,7 +191,7 @@ void main(){
     for(cantEjecuciones=0; cantEjecuciones<5; cantEjecuciones++){
     tiempo_inicio = clock();
     // asigno valores
-    #pragma omp parallel for private (i,randoE,randoEdad,randoH,posicion) collapse(2) num_threads(30)
+    #pragma omp parallel for private (i,randoE,randoEdad,randoH,posicion) collapse(2) num_threads(4)
     for(j=0;j<N;j++){
         //#pragma omp parallel for  private (i,randoE,randoEdad,randoH,posicion) 
         for(i=0;i<N;i++){
@@ -303,7 +303,7 @@ void main(){
         arbolCuenta[0]= 0;
         arbolCuenta[1]= 0;
 
-       // #pragma omp parallel for private ( arbolCuenta, i, posicion, randoE)  collapse(2) num_threads(2)
+      // #pragma omp parallel for private ( arbolCuenta, i, posicion, randoE)  collapse(2) num_threads(2)
         for(j=0;j<N;j++){
             
             //#pragma omp parallel for  private ( arbolCuenta, i, posicion, randoE) 
@@ -526,24 +526,25 @@ void main(){
         }
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         ///actualizar matriz
-        /*for(j=0;j<N;j++){
-            #pragma omp  for schedule(dynamic,25)  private (i,posicion) 
-            for(i=0;i<N;i++){
-                #pragma omp critical
-                {
-                posicion= j*N+i;
-                mat[posicion].estado= matrizAux[posicion].estado;
-                mat[posicion].edad= matrizAux[posicion].edad;
-                mat[posicion].herida= matrizAux[posicion].herida;
-                mat[posicion].tiempo= matrizAux[posicion].tiempo;
-                }
-            }
-        }*/
-        #pragma omp single
-        {
+        // #pragma omp parallel for private (i,posicion) collapse(2) num_threads(2)
+        // for(j=0;j<N;j++){
+        //     //#pragma omp  for schedule(dynamic,25)  private (i,posicion) 
+        //     for(i=0;i<N;i++){
+        //         #pragma omp critical
+        //         {
+        //         posicion= j*N+i;
+        //         mat[posicion].estado= matrizAux[posicion].estado;
+        //         mat[posicion].edad= matrizAux[posicion].edad;
+        //         mat[posicion].herida= matrizAux[posicion].herida;
+        //         mat[posicion].tiempo= matrizAux[posicion].tiempo;
+        //         }
+        //     }
+        // }
+        // #pragma omp single
+        // {
         aux= mat;
         mat= matrizAux;
-        matrizAux=aux;}
+        matrizAux=aux;//}
         //printf("Muestro matriz en semana %d\n",ciclo+1);
         //imprimirMatriz(mat);
     }
