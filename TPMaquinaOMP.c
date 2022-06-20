@@ -486,7 +486,7 @@ void main(){
         }
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         ///actualizar matriz
-        for(j=0;j<N;j++){
+        /*for(j=0;j<N;j++){
             #pragma omp  for schedule(dynamic,25)  private (i,posicion) 
             for(i=0;i<N;i++){
                 #pragma omp critical
@@ -498,7 +498,12 @@ void main(){
                 mat[posicion].tiempo= matrizAux[posicion].tiempo;
                 }
             }
-        }
+        }*/
+        #pragma omp critical
+        {
+        aux= mat;
+        mat= matrizAux;
+        matrizAux=aux;}
         //printf("Muestro matriz en semana %d\n",ciclo+1);
         //imprimirMatriz(mat);
     }
