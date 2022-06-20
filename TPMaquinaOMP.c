@@ -276,7 +276,7 @@ void main(){
 
 
         for(j=0;j<N;j++){
-            #pragma omp  for schedule(dynamic,25) private ( arbolCuenta, i, posicion, randoE) 
+            #pragma omp parallel for schedule(dynamic,25) private ( arbolCuenta, i, posicion, randoE) 
             for(i=0;i<N;i++){
                 #pragma omp critical
                 {
@@ -499,7 +499,7 @@ void main(){
                 }
             }
         }*/
-        #pragma omp critical
+        #pragma omp single
         {
         aux= mat;
         mat= matrizAux;
