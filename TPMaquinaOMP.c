@@ -21,8 +21,8 @@ typedef struct  {
 
 void reAsignarEdad(Arbol *mat, int posicion){
     int randoH;
-    #pragma omp critical
-    {
+    // #pragma omp critical
+    // {
     if(mat[posicion].edad>= 52 && mat[posicion].edad <=156){
                 randoH= rand()%100;
                 if(randoH <= 23){
@@ -56,7 +56,7 @@ void reAsignarEdad(Arbol *mat, int posicion){
 
         }
     }
-    }
+    //}
 
 }
 
@@ -65,8 +65,8 @@ void fArbolSano(Arbol *mat, int posicion, int arbolCuenta[], Arbol *matrizAux){
     int porcArbolRojo=0;
     int probContangio, susc;
     float randoP;
-    #pragma omp critical
-    {
+    // #pragma omp critical
+    // {
     porcArbolRojo= arbolCuenta[0]/arbolCuenta[1];
 
     ///susceptibilidad
@@ -116,14 +116,14 @@ void fArbolSano(Arbol *mat, int posicion, int arbolCuenta[], Arbol *matrizAux){
         matrizAux[posicion].herida= mat[posicion].herida;
         matrizAux[posicion].tiempo= mat[posicion].tiempo;
     }
-    }
+    //}
 
 }
 
 ///------------------------------------------------------------
 void sumaArbol(Arbol *mat, int i, int j, int arbolCuenta[]){
-    #pragma omp critical
-    {
+    // #pragma omp critical
+    // {
     if(mat[j*N+i].estado == ROJO){
         arbolCuenta[0]= arbolCuenta[0]+1;
         arbolCuenta[1]= arbolCuenta[1]+1;
@@ -131,7 +131,7 @@ void sumaArbol(Arbol *mat, int i, int j, int arbolCuenta[]){
     else{
         arbolCuenta[1]= arbolCuenta[1]+1;
     }
-    }
+    //}
 
 }
 
@@ -159,12 +159,12 @@ void imprimirMatriz(Arbol *mat){
 }
 void main(){
 
-    int i,j,randoE,randoEdad, ejecuciones=1000,posicion;
+    int i,j,randoE,randoEdad, ejecuciones=500,posicion;
     clock_t  tiempo_inicio, tiempo_final, tiempoTotal;
     double segundos;
     int randoH;
     int cantEjecuciones;
-    N=1500;
+    N=150;
     Arbol *mat= NULL;
     mat= (Arbol *)malloc(N*N*sizeof(Arbol));
     Arbol *matrizAux= NULL;
@@ -173,11 +173,12 @@ void main(){
     int arbolCuenta[2];/// Pos 0= blanco, 1= azul, 2= rojo, 3= naranja, 4= verde, 5= tiene el total de vecinos
     int probContangio;
     //printf("Mostrar matriz:\n");
+    omp_set_num_threads(20);
     for(cantEjecuciones=0; cantEjecuciones<5; cantEjecuciones++){
     tiempo_inicio = clock();
     // asigno valores
     for(j=0;j<N;j++){
-        #pragma omp parallel for schedule(dynamic,25) private (i,randoE,randoEdad,randoH,posicion) shared(mat)
+        #pragma omp parallel for  private (i,randoE,randoEdad,randoH,posicion) 
         for(i=0;i<N;i++){
             /*if(i==0){
               printf("[");
@@ -186,34 +187,44 @@ void main(){
             {
                 posicion= j*N+i;
                 //printf("posicion %d\n",posicion);
-                randoE= rand() % 100;
+                randoE= rand() % 100;//}
                 //asignarE(mat,i,j, N,randoE);
                 ///Asigno estado
                 if(randoE<= 65){
+                    // #pragma omp critical
+                    // {
                     mat[posicion].estado= VERDE;
-                    mat[posicion].tiempo=0;
+                    mat[posicion].tiempo=0;//}
                 }
                 else{
                     if(randoE>65 && randoE<=70){
-                        mat[posicion].estado=ROJO;
+                        // #pragma omp critical
+                        // {
+                        mat[posicion].estado=ROJO;//}
                     }
                      else{
                         if(randoE>70 && randoE<=80){
-
-                            mat[posicion].estado=NARANJA;
+                            // #pragma omp critical
+                            // {
+                            mat[posicion].estado=NARANJA;//}
                         }
                         else{
                             if(randoE>80 && randoE<=100){
-
-                                mat[posicion].estado=AZUL;
+                                // #pragma omp critical
+                                // {
+                                mat[posicion].estado=AZUL;//}
                             }
                         }
                     }
                 }
+                // #pragma omp critical
+                // {
                 randoEdad= rand() % 100;
                 //asignarEdad(mat, i, j, N, randoEdad);
                 ///Asigno edad y herida
                 if(randoEdad<= 30){
+                            // #pragma omp critical
+                            // {
                             mat[posicion].edad= 52;/// Arbol Joven de un ano
                             randoH= rand()%100;
                             if(randoH <= 23){
@@ -222,10 +233,12 @@ void main(){
                             else{
                                 mat[posicion].herida= 0; /// Arbol sin herida abierta
                             }
-
+                            //}
                 }
                 else{
                     if(randoEdad>30 && randoEdad<=80){
+                        // #pragma omp critical
+                        // {
                         mat[posicion].edad= 157;/// Arbol Adulto de 3 ano y 1 semana
                         randoH= rand()%100;
                         if(randoH <= 8){
@@ -234,9 +247,12 @@ void main(){
                         else{
                             mat[posicion].herida= 0; /// Arbol sin herida abierta
                         }
+                        //}
                     }
                      else{
                         if(randoEdad>80 && randoEdad<=100){
+                            // #pragma omp critical
+                            // {
                             mat[posicion].edad= 1821; ///Arbol Viejo con 35 anos y 1 semana
                             randoH= rand()%100;
                             if(randoH <= 37){
@@ -245,11 +261,12 @@ void main(){
                             else{
                                 mat[posicion].herida= 0; /// Arbol sin herida abierta
                             }
+                            //}
                         }
 
                     }
                 }
-            }
+            //}
             /*printf("%d  ",mat[posicion].estado);
             if(i==N-1){
                 printf("]\n");
@@ -257,8 +274,8 @@ void main(){
             else{
                 printf(" ");
             }*/
-         }
-
+            }
+        }
     }
     //-------------------------------------------------------------------------------------------------------------------------
     ///Ejecucion de reglas
@@ -276,12 +293,13 @@ void main(){
 
 
         for(j=0;j<N;j++){
-            #pragma omp parallel for schedule(dynamic,25) private ( arbolCuenta, i, posicion, randoE) 
+            
+            #pragma omp parallel for  private ( arbolCuenta, i, posicion, randoE) 
             for(i=0;i<N;i++){
                 #pragma omp critical
                 {
                 posicion= j*N+i;
-                }
+                //}
                ///calculos vecinos
                ///casos de eje horizontal
                 if(!((i-2)<0)){
@@ -341,23 +359,27 @@ void main(){
                     fArbolSano(mat,posicion, arbolCuenta,matrizAux);
                }
                else{
-                    #pragma omp critical
-                    {
+                    // #pragma omp critical
+                    // {
                     if(mat[posicion].estado== NARANJA){
                         //printf("aqui1\n");
                         ///funcion de arbol enfermo sin sintomas
                         //fArbolEnfermoS(mat,i,j,arbolCuenta,matrizAux);
                         if(mat[posicion].tiempo == 3){
+                            // #pragma omp critical
+                            // {
                             matrizAux[posicion].estado=ROJO;
                             matrizAux[posicion].edad= mat[posicion].edad;
                             matrizAux[posicion].herida= matrizAux[posicion].herida;
-                            matrizAux[posicion].tiempo= mat[posicion].tiempo;
+                            matrizAux[posicion].tiempo= mat[posicion].tiempo;//}
                         }
                         else{
+                            // #pragma omp critical
+                            // {
                             matrizAux[posicion].estado=NARANJA;
                             matrizAux[posicion].edad= mat[posicion].edad;
                             matrizAux[posicion].herida= mat[posicion].herida;
-                            matrizAux[posicion].tiempo= mat[posicion].tiempo+1;
+                            matrizAux[posicion].tiempo= mat[posicion].tiempo+1;//}
                         }
                     }
                     else{
@@ -365,43 +387,53 @@ void main(){
                             ///printf("aqui2\n");
                             ///funcion de arbol enfermo con sintomas
                             //fArbolEnfermo(mat,i,j,arbolCuenta,matrizAux);
-
-                            randoE= rand() % 100;
+                            // #pragma omp critical
+                            // {
+                            randoE= rand() % 100;//}
                             if(randoE <= 85){
+                                // #pragma omp critical
+                                // {
                                  matrizAux[posicion].estado=AZUL;
                                  matrizAux[posicion].edad= mat[posicion].edad;
                                  matrizAux[posicion].herida= mat[posicion].herida;
-                                 matrizAux[posicion].tiempo= 0;
+                                 matrizAux[posicion].tiempo= 0;//}
                                  //matrizAux[i*N+j].flagTiempo= 1;
                             }
                             else{
-
+                                // #pragma omp critical
+                                // {
                                 matrizAux[posicion].estado=mat[posicion].estado;
                                 matrizAux[posicion].edad= mat[posicion].edad;
                                 matrizAux[posicion].herida= mat[posicion].herida;
-                                matrizAux[posicion].tiempo= mat[posicion].tiempo + 1;
+                                matrizAux[posicion].tiempo= mat[posicion].tiempo + 1;//}
                             }
                         }
                         else{
                             if(mat[posicion].estado==AZUL){
                                 ///funcion de arbol con tratamiento
                                 if(mat[posicion].tiempo >= 5){
-                                    randoE= rand()%100;
+                                    // #pragma omp critical
+                                    // {
+                                    randoE= rand()%100;//}
                                     //printf("aca tiempo dentro de 8\n");
                                     if((mat[posicion].edad >= 52 && mat[posicion].edad <=156)){
                                         if(randoE<= 3){
                                             ///aca iria recuperado
+                                            // #pragma omp critical
+                                            // {
                                             matrizAux[posicion].estado=VERDE;
                                             matrizAux[posicion].edad= mat[posicion].edad;
                                             matrizAux[posicion].herida= 0;
-                                            matrizAux[posicion].tiempo= 0;
+                                            matrizAux[posicion].tiempo= 0;//}
                                         }
                                         else{
                                             ///aca iria podado
+                                            // #pragma omp critical
+                                            // {
                                             matrizAux[posicion].estado==BLANCO;
                                             matrizAux[posicion].edad= mat[posicion].edad;
                                             matrizAux[posicion].herida= 0;
-                                            matrizAux[posicion].tiempo= 0;
+                                            matrizAux[posicion].tiempo= 0;//}
                                         }
 
                                     }
@@ -411,17 +443,21 @@ void main(){
                                     if((mat[posicion].edad >= 157 && mat[posicion].edad <=1820)){/// arbol adulto
                                         if(randoE <= 15){
                                             ///aca iria recuperado
+                                            // #pragma omp critical
+                                            // {
                                             matrizAux[posicion].estado=VERDE;
                                             matrizAux[posicion].edad= mat[posicion].edad;
                                             matrizAux[posicion].herida= 0;
-                                            matrizAux[posicion].tiempo= 0;
+                                            matrizAux[posicion].tiempo= 0;//}
                                         }
                                         else{
                                             ///aca iria podado
+                                            // #pragma omp critical
+                                            // {
                                             matrizAux[posicion].estado=BLANCO;
                                             matrizAux[posicion].edad= mat[posicion].edad;
                                             matrizAux[posicion].herida= 0;
-                                            matrizAux[posicion].tiempo= 0;
+                                            matrizAux[posicion].tiempo= 0;//}
                                         }
 
                                     }
@@ -430,28 +466,33 @@ void main(){
                                     if(mat[posicion].edad >=1821){ ///arbol viejo
                                         if(randoE <= 53){
                                             ///aca iria recuperado
+                                            // #pragma omp critical
+                                            // {
                                             matrizAux[posicion].estado= VERDE;
                                             matrizAux[posicion].edad= mat[posicion].edad;
                                             matrizAux[posicion].herida= 0;
-                                            matrizAux[posicion].tiempo= 0;
+                                            matrizAux[posicion].tiempo= 0;//}
                                         }
                                         else{
                                             ///aca iria reemplazado por un arbol joven
+                                            // #pragma omp critical
+                                            // {
                                             matrizAux[posicion].estado= VERDE;
                                             matrizAux[posicion].edad= 1;
                                             matrizAux[posicion].herida= 0;
-                                            matrizAux[posicion].tiempo= 0;
+                                            matrizAux[posicion].tiempo= 0;//}
                                         }
 
                                     }
 
                                 }
                                 else{
-
+                                    // #pragma omp critical
+                                    // {
                                     matrizAux[posicion].estado=mat[posicion].estado;
                                     matrizAux[posicion].edad= mat[posicion].edad;
                                     matrizAux[posicion].herida= mat[posicion].herida;
-                                    matrizAux[posicion].tiempo= mat[posicion].tiempo + 1;
+                                    matrizAux[posicion].tiempo= mat[posicion].tiempo + 1;//}
                                 }
                             }
                             else{
@@ -460,18 +501,20 @@ void main(){
                                     ///funcion de arbol podado
                                     //fArbolPodado(mat,i,j,arbolCuenta,matrizAux);
                                     if(mat[posicion].tiempo == 12){
-
+                                        // #pragma omp critical
+                                        // {
                                         matrizAux[posicion].estado= VERDE;
                                         matrizAux[posicion].edad= mat[posicion].edad;
                                         matrizAux[posicion].herida= 0;
-                                        matrizAux[posicion].tiempo= 0;
+                                        matrizAux[posicion].tiempo= 0;//}
                                     }
                                     else{
-
+                                        // #pragma omp critical
+                                        // {
                                         matrizAux[posicion].estado= BLANCO;
                                         matrizAux[posicion].edad= mat[posicion].edad;
                                         matrizAux[posicion].herida= mat[posicion].herida;
-                                        matrizAux[posicion].tiempo= mat[posicion].tiempo+1;
+                                        matrizAux[posicion].tiempo= mat[posicion].tiempo+1;//}
                                     }
                                 }
                             }
@@ -479,10 +522,11 @@ void main(){
                     }
                     }///fin de critical
                }///fin de else
-               #pragma omp critical
+                #pragma omp critical
                matrizAux[posicion].edad= matrizAux[posicion].edad+1;
-                //}
-             }
+                }
+             
+            ///
         }
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         ///actualizar matriz
