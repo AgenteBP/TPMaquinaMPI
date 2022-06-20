@@ -191,7 +191,7 @@ void main(){
     for(cantEjecuciones=0; cantEjecuciones<5; cantEjecuciones++){
     tiempo_inicio = clock();
     // asigno valores
-    #pragma omp parallel for private (i,randoE,randoEdad,randoH,posicion) collapse(2) num_threads(4)
+    #pragma omp parallel for private (i,randoE,randoEdad,randoH,posicion) collapse(2) num_threads(30)
     for(j=0;j<N;j++){
         //#pragma omp parallel for  private (i,randoE,randoEdad,randoH,posicion) 
         for(i=0;i<N;i++){
