@@ -643,7 +643,7 @@ void main(int argc, char *argv[]){
                                          
                     }
                 }
-        #pragma omp parallel for private ( i,j,arbolCuenta,  posicion, randoE)  collapse(2) num_threads(2)
+        #pragma omp parallel for private ( i,j,arbolCuenta,  posicion, randoE)  collapse(2) num_threads(8)
         for(j=0;j<tam;j++){
             for(i=0;i<N;i++){
                 posicion= j*N+i;
