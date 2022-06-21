@@ -312,7 +312,7 @@ void main(){
         arbolCuenta[0]= 0;
         arbolCuenta[1]= 0;
 
-      #pragma omp parallel for private ( i,j,arbolCuenta,  posicion, randoE)  collapse(2) num_threads(15)
+      #pragma omp parallel for private ( i,j,arbolCuenta,  posicion, randoE)  collapse(2) num_threads(8)
       //#pragma omp parallel for  private (  j)  
         //{
         for(j=0;j<N;j++){
