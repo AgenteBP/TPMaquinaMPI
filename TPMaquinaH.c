@@ -9,7 +9,7 @@
 #define NARANJA 2 ///ENFERMO SIN SINTOMAS
 #define ROJO 3 ///ENFERMO CON SINTOMAS
 #define VERDE 4 ///SANO
-#define N 150
+#define N 1500
 
 int tamG;
 
@@ -478,7 +478,7 @@ void main(int argc, char *argv[]){
     MPI_Comm_size(MPI_COMM_WORLD,&comm_sz);// Obtener la cantidad de procesos
     MPI_Comm_rank(MPI_COMM_WORLD,&my_rank);// Obtener el número de proceso
 
-    int i,j,randoE,randoEdad, ejecuciones=500,posicion;
+    int i,j,randoE,randoEdad, ejecuciones=1000,posicion;
     double segundos;
     int randoH;
     int cantEjecuciones;
