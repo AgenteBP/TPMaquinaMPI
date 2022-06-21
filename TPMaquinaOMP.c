@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
+#include <omp.h>
 
 #define BLANCO 0///PODADO
 #define AZUL 1///TRATAMIENTO
@@ -71,50 +72,58 @@ void fArbolSano(Arbol *mat, int posicion, int arbolCuenta[], Arbol *matrizAux){
     int porcArbolRojo=0;
     int probContangio, susc;
     float randoP;
-    // #pragma omp critical
-    // {
-    porcArbolRojo= arbolCuenta[0]/arbolCuenta[1];
+    #pragma omp critical
+    {
+    porcArbolRojo= arbolCuenta[0]/arbolCuenta[1];}
 
     ///susceptibilidad
     if(mat[posicion].herida == 1){
         if(mat[posicion].edad>= 52 && mat[posicion].edad <=156){
-    
-            susc= 0.35+ 0.15;
+            #pragma omp critical
+            {
+            susc= 0.35+ 0.15;}
         }
         else{
             if(mat[posicion].edad>=157 && mat[posicion].edad <=1820){
-        
-                susc= 0.17+ 0.15;
+                #pragma omp critical
+    {
+                susc= 0.17+ 0.15;}
             }
             else{
                 if(mat[posicion].edad>= 1821){
-            
-                    susc= 0.63 + 0.15;
+            #pragma omp critical
+    {
+                    susc= 0.63 + 0.15;}
                 }
             }
         }
     }
     else{
         if(mat[posicion].edad>= 52 && mat[posicion].edad <=156){
-    
-            susc= 0.35;
+            #pragma omp critical
+    {
+            susc= 0.35;}
         }
         else{
             if(mat[posicion].edad>=157 && mat[posicion].edad <=1820){
-        
-                susc= 0.17;
+                #pragma omp critical
+    {
+                susc= 0.17;}
             }
             else{
                 if(mat[posicion].edad>= 1821){
-            
-                    susc= 0.63;
+                    #pragma omp critical
+    {
+                    susc= 0.63;}
                 }
             }
         }
     }
+    #pragma omp critical
+    {
     probContangio= ((porcArbolRojo * susc)*0,60)+0,7;
 
-    randoP= ( rand( ) % 1001 ) / 1000.0f ;
+    randoP= ( rand( ) % 1001 ) / 1000.0f ;}
 
     if( randoP<= probContangio){
         
@@ -173,12 +182,12 @@ void imprimirMatriz(Arbol *mat){
 }
 void main(){
 
-    int i,j,randoE,randoEdad, ejecuciones=1000,posicion;
+    int i,j,randoE,randoEdad, ejecuciones=500,posicion;
     clock_t  tiempo_inicio, tiempo_final, tiempoTotal;
     double segundos;
     int randoH;
     int cantEjecuciones;
-    N=1200;
+    N=150;
     Arbol *mat= NULL;
     mat= (Arbol *)malloc(N*N*sizeof(Arbol));
     Arbol *matrizAux= NULL;
@@ -191,7 +200,7 @@ void main(){
     for(cantEjecuciones=0; cantEjecuciones<5; cantEjecuciones++){
     tiempo_inicio = clock();
     // asigno valores
-    #pragma omp parallel for private (i,randoE,randoEdad,randoH,posicion) collapse(2) num_threads(30)
+    //#pragma omp parallel for private (i,j,randoE,randoEdad,randoH,posicion) collapse(2) num_threads(2)
     for(j=0;j<N;j++){
         //#pragma omp parallel for  private (i,randoE,randoEdad,randoH,posicion) 
         for(i=0;i<N;i++){
@@ -303,69 +312,71 @@ void main(){
         arbolCuenta[0]= 0;
         arbolCuenta[1]= 0;
 
-      // #pragma omp parallel for private ( arbolCuenta, i, posicion, randoE)  collapse(2) num_threads(2)
+      #pragma omp parallel for private ( i,j,arbolCuenta,  posicion, randoE)  collapse(2) num_threads(15)
+      //#pragma omp parallel for  private (  j)  
+        //{
         for(j=0;j<N;j++){
             
-            //#pragma omp parallel for  private ( arbolCuenta, i, posicion, randoE) 
+            //#pragma omp parallel for  private ( arbolCuenta, i, posicion, randoE) num_threads(2)
             for(i=0;i<N;i++){
                 
                 posicion= j*N+i;
                 //}
-               ///calculos vecinos
-               ///casos de eje horizontal
-                if(!((i-2)<0)){
-                    sumaArbol(mat,i-2,j, arbolCuenta);
-                }
-
-                if(!((i+2)>=N)){
-                    sumaArbol(mat,i+2,j, arbolCuenta);
-                }
-
-                if(!((i-1)<0)){
-                    sumaArbol(mat,i-1,j, arbolCuenta);
-                }
-
-                if(!((i+1)>=N)){
-                    sumaArbol(mat,i+1,j, arbolCuenta);
-                }
-                ///////////////////////////////////////////
-                ///Casos de los eje vertical
-                if(!((j-2)<0)){
-                    sumaArbol(mat,i,j-2, arbolCuenta);
-                }
-
-                if(!((j+2)>=N)){
-                    sumaArbol(mat,i,j+2, arbolCuenta);
-                }
-
-                if(!((j-1)<0) ){
-                    sumaArbol(mat,i,j-1, arbolCuenta);
-                }
-
-                if(!(j+1>=N)){
-                    sumaArbol(mat,i,j+1, arbolCuenta);
-                }
-                ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                ///Casos de los costados
-                if( (i-1 >= 0 && j-1 >= 0)){
-                    sumaArbol(mat,i-1,j-1, arbolCuenta);
-                }
-
-                if( (i+1<N && j-1 >=0)){
-                    sumaArbol(mat,i+1,j-1, arbolCuenta);
-                }
-
-                if( (i-1 >=0 && j+1 < N)){
-                    sumaArbol(mat,i-1,j+1, arbolCuenta);
-                }
-
-                if( (i+1 < N && j+1 < N)){
-                    sumaArbol(mat,i+1,j+1, arbolCuenta);
-                }
+               
                 ///fin de calcular vecinos/////////////////////////////////////////////////////////////////////////////////////
                 ///Comienzo de consulta de estado
                if(mat[posicion].estado==VERDE){
-                    //printf("aqui0\n");
+                    //calculos vecinos
+                   ///casos de eje horizontal
+                    if(!((i-2)<0)){
+                        sumaArbol(mat,i-2,j, arbolCuenta);
+                    }
+
+                    if(!((i+2)>=N)){
+                        sumaArbol(mat,i+2,j, arbolCuenta);
+                    }
+
+                    if(!((i-1)<0)){
+                        sumaArbol(mat,i-1,j, arbolCuenta);
+                    }
+
+                    if(!((i+1)>=N)){
+                        sumaArbol(mat,i+1,j, arbolCuenta);
+                    }
+                    ///////////////////////////////////////////
+                    ///Casos de los eje vertical
+                    if(!((j-2)<0)){
+                        sumaArbol(mat,i,j-2, arbolCuenta);
+                    }
+
+                    if(!((j+2)>=N)){
+                        sumaArbol(mat,i,j+2, arbolCuenta);
+                    }
+
+                    if(!((j-1)<0) ){
+                        sumaArbol(mat,i,j-1, arbolCuenta);
+                    }
+
+                    if(!(j+1>=N)){
+                        sumaArbol(mat,i,j+1, arbolCuenta);
+                    }
+                    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                    ///Casos de los costados
+                    if( (i-1 >= 0 && j-1 >= 0)){
+                        sumaArbol(mat,i-1,j-1, arbolCuenta);
+                    }
+
+                    if( (i+1<N && j-1 >=0)){
+                        sumaArbol(mat,i+1,j-1, arbolCuenta);
+                    }
+
+                    if( (i-1 >=0 && j+1 < N)){
+                        sumaArbol(mat,i-1,j+1, arbolCuenta);
+                    }
+
+                    if( (i+1 < N && j+1 < N)){
+                        sumaArbol(mat,i+1,j+1, arbolCuenta);
+                    }
                     reAsignarEdad(mat,posicion);
                     fArbolSano(mat,posicion, arbolCuenta,matrizAux);
                }
@@ -524,6 +535,7 @@ void main(){
              
             ///
         }
+        //}///fin de collapse
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         ///actualizar matriz
         // #pragma omp parallel for private (i,posicion) collapse(2) num_threads(2)
@@ -540,11 +552,10 @@ void main(){
         //         }
         //     }
         // }
-        // #pragma omp single
-        // {
+        
         aux= mat;
         mat= matrizAux;
-        matrizAux=aux;//}
+        matrizAux=aux;
         //printf("Muestro matriz en semana %d\n",ciclo+1);
         //imprimirMatriz(mat);
     }
