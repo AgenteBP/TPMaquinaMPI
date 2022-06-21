@@ -187,7 +187,7 @@ void main(){
     double segundos;
     int randoH;
     int cantEjecuciones;
-    N=1500;
+    N=1200;
     Arbol *mat= NULL;
     mat= (Arbol *)malloc(N*N*sizeof(Arbol));
     Arbol *matrizAux= NULL;
