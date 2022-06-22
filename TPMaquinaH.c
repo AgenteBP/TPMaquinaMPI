@@ -9,7 +9,7 @@
 #define NARANJA 2 ///ENFERMO SIN SINTOMAS
 #define ROJO 3 ///ENFERMO CON SINTOMAS
 #define VERDE 4 ///SANO
-#define N 2000
+#define N 1200
 
 int tamG;
 
@@ -643,7 +643,7 @@ void main(int argc, char *argv[]){
                                          
                     }
                 }
-        #pragma omp parallel for private ( i,j,arbolCuenta,  posicion, randoE)  collapse(2) num_threads(8)
+        #pragma omp parallel for private ( i,j,arbolCuenta,  posicion, randoE)  collapse(2) num_threads(4)
         for(j=0;j<tam;j++){
             for(i=0;i<N;i++){
                 posicion= j*N+i;
