@@ -559,13 +559,14 @@ void main(){
     }
     tiempo_final = clock();
 
-    segundos = (double)(tiempo_final - tiempo_inicio) / CLOCKS_PER_SEC; /*según que estes midiendo el tiempo en segundos es demasiado grande*/
+    segundos = (double)(tiempo_final - tiempo_inicio) / (clock_t)1000000; /*según que estes midiendo el tiempo en segundos es demasiado grande*/
 
     printf("Tiempo de ejecucion de una vuelta: %f\n",segundos);
-    tiempoTotal += (tiempo_final-tiempo_inicio);
+    tiempoTotal += segundos;
+    segundos=0;
 
     }
-    printf("el tiempo promedio de las ejecuciones fue: %f\n",(double)(tiempoTotal/5)/CLOCKS_PER_SEC);
+    printf("el tiempo promedio de las ejecuciones fue: %f\n",(double)(tiempoTotal/5));
     printf("Con una matriz de %dx%d\n",N,N);
     printf("Con semana: %d\n",ejecuciones);
     printf("Y 5 ejecuciones\n");
