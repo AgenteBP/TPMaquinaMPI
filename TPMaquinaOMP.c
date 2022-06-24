@@ -187,7 +187,7 @@ void main(){
     double segundos;
     int randoH;
     int cantEjecuciones;
-    N=2000;
+    N=1200;
     Arbol *mat= NULL;
     mat= (Arbol *)malloc(N*N*sizeof(Arbol));
     Arbol *matrizAux= NULL;
@@ -202,7 +202,6 @@ void main(){
     // asigno valores
     //#pragma omp parallel for private (i,j,randoE,randoEdad,randoH,posicion) collapse(2) num_threads(2)
     for(j=0;j<N;j++){
-        //#pragma omp parallel for  private (i,randoE,randoEdad,randoH,posicion) 
         for(i=0;i<N;i++){
             /*if(i==0){
               printf("[");
@@ -312,8 +311,7 @@ void main(){
         arbolCuenta[0]= 0;
         arbolCuenta[1]= 0;
 
-      #pragma omp parallel for private ( i,j,arbolCuenta,  posicion, randoE)  collapse(2) num_threads(8)
-      //#pragma omp parallel for  private (  j)  
+      #pragma omp parallel for private ( i,j,arbolCuenta,  posicion, randoE)  collapse(2) num_threads(4)
         //{
         for(j=0;j<N;j++){
             
