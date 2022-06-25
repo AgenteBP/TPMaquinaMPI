@@ -187,7 +187,7 @@ void main(){
     double segundos;
     int randoH;
     int cantEjecuciones;
-    N=1500;
+    N=2000;
     Arbol *mat= NULL;
     mat= (Arbol *)malloc(N*N*sizeof(Arbol));
     Arbol *matrizAux= NULL;
@@ -559,7 +559,7 @@ void main(){
     }
     tiempo_final = clock();
 
-    segundos = (double)(tiempo_final - tiempo_inicio) / (clock_t)1000000; /*según que estes midiendo el tiempo en segundos es demasiado grande*/
+    segundos = (double)(tiempo_final - tiempo_inicio) / CLOCKS_PER_SEC; /*según que estes midiendo el tiempo en segundos es demasiado grande*/
 
     printf("Tiempo de ejecucion de una vuelta: %f\n",segundos);
     tiempoTotal += segundos;
